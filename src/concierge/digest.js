@@ -125,7 +125,7 @@ async function draftReply(row, displayName) {
 
 // ---------- build + send ----------
 async function buildDigestForAccount(account, items) {
-  const lines = [`🤖 *Resumo do dia — WhatsApp ${account.name}*`, ''];
+  const lines = [`🤖 *Resumo do dia (WhatsApp ${account.name})*`, ''];
 
   if (items.length === 0) {
     lines.push('✅ Nenhuma conversa esquecida nas últimas 24h. Bom trabalho!');
