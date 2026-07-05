@@ -53,7 +53,9 @@ node scripts/setup.js --port 3000 --hour <hora_escolhida>
 2. Envie pelo MCP uma mensagem de boas-vindas **para o próprio número dele** (chat "você mesmo"):
    > 🤖 Seu concierge de WhatsApp está ativo! Todo dia às <hora>h eu te mando aqui o resumo do que ficou sem resposta, com sugestões prontas. Você também pode me comandar pelo Claude Code: "responde o João que...", "o que ficou pendente hoje?".
 3. Confirme com ele que a mensagem chegou no celular. Está entregue.
-4. Feche explicando em 3 linhas o que ele tem agora e que, se um dia uma conta deslogar, o sistema se reconecta sozinho e só chama ele se precisar de um novo QR (avisado no próprio WhatsApp).
+4. Feche explicando em poucas linhas o que ele tem agora:
+   - O sistema liga sozinho com o computador e se reconecta sozinho se cair; ele só será chamado se precisar escanear QR de novo (avisado no próprio WhatsApp).
+   - **O computador precisa estar ligado para o concierge trabalhar.** Se estiver desligado na hora do resumo, sem problema: o resumo do dia chega minutos depois que ele ligar o computador.
 
 ### Se algo der errado
 

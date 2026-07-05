@@ -23,6 +23,7 @@ Ele te pergunta o que precisa (qual conta, que horas quer o resumo), conecta seu
 - Windows 10/11 ou macOS
 - [Claude Code](https://claude.com/claude-code) (qualquer plano)
 - Node.js 20+ (o instalador resolve se faltar)
+- Computador ligado para o concierge trabalhar (se estiver desligado na hora do resumo, ele chega minutos depois que você ligar)
 
 ## Perguntas honestas
 
