@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp MCP</title>
+  <link rel="stylesheet" href="/css/style.css?v=20260316b">
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1><span class="dot"></span> WhatsApp MCP</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" data-page="accounts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Contas
+        </button>
+        <button class="nav-item" data-page="messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Mensagens
+        </button>
+        <button class="nav-item" data-page="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Busca
+        </button>
+        <button class="nav-item" data-page="contacts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Contatos
+        </button>
+        <button class="nav-item" data-page="scheduled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Agendados
+        </button>
+        <button class="nav-item" data-page="groups">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Grupos
+        </button>
+        <button class="nav-item" data-page="activity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Atividade
+        </button>
+        <button class="nav-item" data-page="ai-profiles">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 1 3 3v1a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><rect x="8" y="10" width="8" height="8" rx="1"/><path d="M10 14h4"/><path d="M12 14v3"/><path d="M7 18v2h10v-2"/></svg>
+          IAs
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        MCP Server disponivel em stdio<br>
+        <span id="connection-indicator">Conectado ao painel</span>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main">
+      <!-- Dashboard page -->
+      <div class="page" id="page-dashboard">
+        <div class="main-header">
+          <h2>Dashboard</h2>
+          <button class="btn sm" onclick="refreshAll()">Atualizar</button>
+        </div>
+        <div class="main-content">
+          <div class="stats-grid" id="stats-grid"></div>
+          <h3 style="margin-bottom:14px; font-size:15px; color:var(--text-muted)">Contas conectadas</h3>
+          <div class="accounts-grid" id="dash-accounts"></div>
+          <h3 style="margin:24px 0 14px; font-size:15px; color:var(--text-muted)">Conversas recentes</h3>
+          <div class="chat-list" id="dash-chats"></div>
+        </div>
+      </div>
+
+      <!-- Accounts page -->
+      <div class="page" id="page-accounts" style="display:none">
+        <div class="main-header">
+          <h2>Gerenciar Contas</h2>
+          <button class="btn primary" onclick="showAddAccountModal()">+ Nova Conta</button>
+        </div>
+        <div class="main-content">
+          <div class="accounts-grid" id="accounts-list"></div>
+          <div id="qr-display" style="display:none">
+            <h3 style="margin-bottom:12px">Escaneie o QR Code</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px" id="qr-account-name"></p>
+            <div class="qr-container">
+              <img id="qr-image" src="" alt="QR Code">
+            </div>
+            <p style="font-size:12px; color:var(--text-dim); margin-top:8px">Abra o WhatsApp > Menu > Aparelhos conectados > Conectar um aparelho</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages page -->
+      <div class="page" id="page-messages" style="display:none">
+        <div class="messages-container">
+          <div class="messages-sidebar">
+            <div class="search-box">
+              <input type="text" placeholder="Buscar conversa..." id="chat-search" oninput="filterChats()">
+            </div>
+            <div class="filter-bar" style="padding:8px 12px 0">
+              <select id="chat-account-filter" onchange="loadChats()">
+                <option value="">Todas as contas</option>
+              </select>
+            </div>
+            <div class="chat-list" id="chat-list"></div>
+          </div>
+          <div class="messages-main">
+            <div class="messages-header" id="msg-header">
+              <span style="color:var(--text-muted)">Selecione uma conversa</span>
+            </div>
+            <div class="messages-body" id="msg-body">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <h3>Nenhuma conversa selecionada</h3>
+                <p>Selecione uma conversa na lista ao lado para visualizar as mensagens</p>
+              </div>
+            </div>
+            <div class="messages-input" id="msg-input-area" style="display:none">
+              <input type="text" id="msg-input" placeholder="Digite uma mensagem..." onkeydown="if(event.key==='Enter')sendMsg()">
+              <button class="btn primary" onclick="sendMsg()">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search page -->
+      <div class="page" id="page-search" style="display:none">
+        <div class="main-header">
+          <h2>Busca Global</h2>
+        </div>
+        <div class="main-content">
+          <div class="contacts-toolbar">
+            <div class="contacts-search" style="flex:2">
+              <input type="text" id="global-search-input" placeholder="Buscar em todas as mensagens..." onkeydown="if(event.key==='Enter')performGlobalSearch()">
+            </div>
+            <select id="search-account-filter">
+              <option value="">Todas as contas</option>
+            </select>
+            <button class="btn primary" onclick="performGlobalSearch()">Buscar</button>
+          </div>
+          <div id="search-count" class="contacts-count" style="margin-bottom:12px"></div>
+          <div id="search-results" class="feed"></div>
+          <div id="search-empty" class="empty-state" style="display:none">
+            <h3>Nenhum resultado</h3>
+            <p>Tente outro termo de busca</p>
+          </div>
+          <div id="search-load-more" style="text-align:center;padding:16px;display:none">
+            <button class="btn sm" onclick="loadMoreSearch()">Carregar mais</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts page -->
+      <div class="page" id="page-contacts" style="display:none">
+        <div class="main-header">
+          <h2>Contatos</h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn sm" onclick="exportContacts()">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="contacts-toolbar">
+            <div class="contacts-search">
+              <input type="text" id="contacts-search" placeholder="Buscar por nome, telefone..." oninput="searchContacts()">
+            </div>
+            <select id="contacts-account-filter" onchange="searchContacts()">
+              <option value="">Todas as contas</option>
+            </select>
+            <select id="contacts-type-filter" onchange="searchContacts()">
+              <option value="">Todos</option>
+              <option value="0">Pessoas</option>
+              <option value="1">Grupos</option>
+            </select>
+            <div class="contacts-count" id="contacts-count"></div>
+          </div>
+          <div id="contacts-pagination" class="pagination"></div>
+          <div class="contacts-table-wrap">
+            <table class="contacts-table" id="contacts-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Telefone</th>
+                  <th>Tipo</th>
+                  <th>Conta</th>
+                  <th>Atualizado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="contacts-tbody"></tbody>
+            </table>
+          </div>
+          <div id="contacts-empty" class="empty-state" style="display:none">
+            <h3>Nenhum contato encontrado</h3>
+            <p>Contatos aparecem automaticamente ao receber mensagens ou podem ser importados via script</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Profiles page -->
+      <div class="page" id="page-ai-profiles" style="display:none">
+        <div class="main-header">
+          <h2>Perfis de IA</h2>
+          <button class="btn primary" onclick="showProfileModal()">+ Novo Perfil</button>
+        </div>
+        <div class="main-content">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px">
+            Gerencie quais IAs podem acessar quais contas WhatsApp. Use a API Key ou o ID do perfil para autenticar o servidor MCP.
+          </p>
+          <div class="profiles-grid" id="profiles-list"></div>
+        </div>
+      </div>
+
+      <!-- Scheduled messages page -->
+      <div class="page" id="page-scheduled" style="display:none">
+        <div class="main-header">
+          <h2>Mensagens Agendadas</h2>
+        </div>
+        <div class="main-content">
+          <div class="contacts-toolbar">
+            <select id="scheduled-status-filter" onchange="loadScheduled()">
+              <option value="">Todos</option>
+              <option value="pending" selected>Pendentes</option>
+              <option value="sent">Enviados</option>
+              <option value="failed">Falhas</option>
+              <option value="cancelled">Cancelados</option>
+            </select>
+            <div class="contacts-count" id="scheduled-count"></div>
+          </div>
+          <div id="scheduled-list" class="feed"></div>
+          <div id="scheduled-empty" class="empty-state" style="display:none">
+            <h3>Nenhuma mensagem agendada</h3>
+            <p>Use a IA para agendar mensagens com o comando schedule_message</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Groups permissions page -->
+      <div class="page" id="page-groups" style="display:none">
+        <div class="main-header">
+          <h2>Permissoes de Grupos</h2>
+        </div>
+        <div class="main-content">
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px">
+            Controle quais grupos as IAs podem ler e interagir. Novos grupos sao autorizados automaticamente.
+          </p>
+          <div class="contacts-toolbar">
+            <div class="contacts-search">
+              <input type="text" id="groups-search" placeholder="Buscar grupo..." oninput="filterGroups()">
+            </div>
+            <select id="groups-account-filter" onchange="loadGroups()">
+              <option value="">Todas as contas</option>
+            </select>
+            <div class="contacts-count" id="groups-count"></div>
+          </div>
+          <div id="groups-pagination" class="pagination"></div>
+          <div class="contacts-table-wrap">
+            <table class="contacts-table" id="groups-table">
+              <thead>
+                <tr>
+                  <th>Grupo</th>
+                  <th>Conta</th>
+                  <th>Leitura</th>
+                  <th>Interacao</th>
+                </tr>
+              </thead>
+              <tbody id="groups-tbody"></tbody>
+            </table>
+          </div>
+          <div id="groups-empty" class="empty-state" style="display:none">
+            <h3>Nenhum grupo encontrado</h3>
+            <p>Grupos aparecem automaticamente ao receber mensagens</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity page -->
+      <div class="page" id="page-activity" style="display:none">
+        <div class="main-header">
+          <h2>Atividade em Tempo Real</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="dot" style="width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
+            <span style="font-size:12px;color:var(--text-muted)">Ao vivo</span>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="feed" id="activity-feed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Account Modal -->
+  <div class="modal-overlay" id="add-account-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal">
+      <h3>Adicionar Conta WhatsApp</h3>
+      <div class="form-group">
+        <label>ID da Conta</label>
+        <input type="text" id="new-acc-id" placeholder="ex: pessoal, business">
+      </div>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="new-acc-name" placeholder="ex: Meu WhatsApp Pessoal">
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="new-acc-type">
+          <option value="personal">Pessoal</option>
+          <option value="business">Business</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="document.getElementById('add-account-modal').style.display='none'">Cancelar</button>
+        <button class="btn primary" onclick="addAccount()">Adicionar e Conectar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Profile Modal -->
+  <div class="modal-overlay" id="profile-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal">
+      <h3 id="profile-modal-title">Novo Perfil de IA</h3>
+      <input type="hidden" id="profile-edit-id">
+      <div class="form-group">
+        <label>Nome do Perfil</label>
+        <input type="text" id="profile-name" placeholder="ex: Claude Desktop, Cursor, etc.">
+      </div>
+      <div class="form-group">
+        <label>Contas Permitidas</label>
+        <div class="account-checkbox-list" id="profile-accounts-checkboxes"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="document.getElementById('profile-modal').style.display='none'">Cancelar</button>
+        <button class="btn primary" onclick="saveProfile()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Contact Modal -->
+  <div class="modal-overlay" id="contact-modal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal">
+      <h3>Editar Contato</h3>
+      <input type="hidden" id="contact-edit-id">
+      <input type="hidden" id="contact-edit-account">
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="contact-edit-name" placeholder="Nome do contato">
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" id="contact-edit-phone" disabled>
+      </div>
+      <div class="modal-actions">
+        <button class="btn danger" onclick="deleteContact()" style="margin-right:auto">Remover</button>
+        <button class="btn" onclick="document.getElementById('contact-modal').style.display='none'">Cancelar</button>
+        <button class="btn primary" onclick="saveContact()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toasts"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/app.js?v=20260316b"></script>
+</body>
+</html>

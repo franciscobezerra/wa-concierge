@@ -1,0 +1,7 @@
+# Per-user data — NEVER commit. Holds WhatsApp session keys, message history and media.
+data/
+config.json
+
+node_modules/
+*.log
+.DS_Store
